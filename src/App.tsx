@@ -1,10 +1,14 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import Header from './components/Header';
+import Routes from './router/Routes';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <h1>CRUD Front</h1>   
-    </div>
+    <BrowserRouter>
+      <Header />
+      <Routes />
+    </BrowserRouter>
   )
 }
 
