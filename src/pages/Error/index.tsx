@@ -4,7 +4,8 @@ import { ErrorPage } from './styles';
 const Error: React.FC = () => {
   return (
     <ErrorPage>
-      Eu sou a página de Erro!
+      <h1>Ops, ocorreu um erro!</h1>
+      <h2>Verifique a URL da página</h2>
     </ErrorPage>
   )
 }
