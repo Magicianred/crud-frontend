@@ -32,6 +32,16 @@ const Tasks: React.FC = () => {
     }
   }
 
+  const finishedTask = async (id: number) => {
+    await api.patch(`tasks/${id}`)
+    loadTasks()
+  }
+
+  const deleteTask = async (id: number) => {
+    await api.delete(`tasks/${id}`)
+    loadTasks()
+  }
+
   const formatDate = (date: Date) => {
     return moment(date).format("DD/MM/YYYY")
   }
@@ -43,6 +53,10 @@ const Tasks: React.FC = () => {
   const editTask = async (id: number) => {
     history.push(`/cadastro/${id}`)
   }  
+
+  const viewTask = async (id: number) => {
+    history.push(`/detalhes/${id}`)
+  }
 
   return (
     <div className="container">
@@ -75,10 +89,10 @@ const Tasks: React.FC = () => {
                   </Badge>
                 </td>
                 <td>
-                  <Button size="sm" onClick={() => editTask(task.id)}>Editar</Button>{' '}
-                  <Button size="sm" variant="success">Finalizar</Button>{' '}
-                  <Button size="sm" variant="info">Visualizar</Button>{' '}
-                  <Button size="sm" variant="danger">Remover</Button>
+                  <Button size="sm" disabled={task.finished} onClick={() => editTask(task.id)}>Editar</Button>{' '}
+                  <Button size="sm" disabled={task.finished} variant="success" onClick={() => finishedTask(task.id)}>Finalizar</Button>{' '}
+                  <Button size="sm" variant="info" onClick={() => viewTask(task.id)}>Visualizar</Button>{' '}
+                  <Button size="sm" variant="danger" onClick={() => deleteTask(task.id)}>Remover</Button>
                 </td>
               </tr>
             })
