@@ -35,10 +35,14 @@ const Tasks: React.FC = () => {
   const formatDate = (date: Date) => {
     return moment(date).format("DD/MM/YYYY")
   }
-
+  
   const goToCreateTask = async () => {
     history.push('/cadastro')
   }
+ 
+  const editTask = async (id: number) => {
+    history.push(`/cadastro/${id}`)
+  }  
 
   return (
     <div className="container">
@@ -71,10 +75,10 @@ const Tasks: React.FC = () => {
                   </Badge>
                 </td>
                 <td>
-                  <Button size="sm">Editar</Button>{' '}
+                  <Button size="sm" onClick={() => editTask(task.id)}>Editar</Button>{' '}
                   <Button size="sm" variant="success">Finalizar</Button>{' '}
                   <Button size="sm" variant="info">Visualizar</Button>{' '}
-                  <Button size="sm" variant="danger">rEMOVER</Button>
+                  <Button size="sm" variant="danger">Remover</Button>
                 </td>
               </tr>
             })

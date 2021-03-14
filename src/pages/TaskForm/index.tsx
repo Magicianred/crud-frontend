@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { ChangeEvent, useState, useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
 import api from '../../services/api';
 import { TaskHeader } from './styles';
@@ -11,11 +11,18 @@ interface ITask {
 
 const TaskForm: React.FC = () => {
   const history = useHistory()
+  const { id } = useParams()
 
   const [model, setModel] = useState<ITask>({
     title: '',
     description: ''
   })
+
+  useEffect(() => {
+    if (id !== undefined) {
+      findTask(id)
+    }
+  }, [id]) 
 
   const updatedModel = (e: ChangeEvent<HTMLInputElement>) => {
     setModel({
@@ -27,11 +34,25 @@ const TaskForm: React.FC = () => {
   const onSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
-      const res = await api.post('/tasks', model)
-      setModel(res.data)
+      if (id !== undefined) {
+        const res = await api.put(`/tasks/${id}`, model)
+        setModel(res.data)
+      } else {
+        const res = await api.post(`/tasks`, model)
+        setModel(res.data)
+      }
+      goBack()
     } catch (err) {
       alert ("Ops, ocorreu um erro!")
     }
+  }
+
+  const findTask = async (id: string) => {
+    const res = await api.get(`/tasks/${id}`) 
+    setModel({
+      title: res.data.title,
+      description: res.data.description
+    })
   }
 
   const goBack = async () => {
@@ -53,6 +74,7 @@ const TaskForm: React.FC = () => {
             <Form.Control 
               type="text" 
               name="title" 
+              value={model.title}
               onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)} 
             />
           </Form.Group>
@@ -61,6 +83,7 @@ const TaskForm: React.FC = () => {
             <Form.Control 
               as="textarea" 
               rows={3} 
+              value={model.description}
               name="description"
               onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)} 
             />
