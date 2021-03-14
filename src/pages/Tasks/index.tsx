@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Badge, Button } from 'react-bootstrap';
-import api from '../../services/api';
+import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import { TaskHeader } from './styles';
+import api from '../../services/api';
 
 interface ITask {
   id: number;
@@ -15,24 +17,36 @@ interface ITask {
 const Tasks: React.FC = () => {
 
   const [tasks, setTasks] = useState<ITask[]>([])
+  const history = useHistory()
 
   useEffect(() => {
     loadTasks()
   }, [])
 
   const loadTasks = async () => {
-    const res = await api.get("/tasks")
-    setTasks(res.data)
+    try {
+      const res = await api.get("/tasks")
+      setTasks(res.data)
+    } catch (err) {
+      alert("Não foi possível carregar os dados!")
+    }
   }
 
   const formatDate = (date: Date) => {
     return moment(date).format("DD/MM/YYYY")
   }
 
+  const goToCreateTask = async () => {
+    history.push('/cadastro')
+  }
+
   return (
     <div className="container">
       <br></br>
-      <h2>Tasks</h2>
+      <TaskHeader className="task-header">
+        <h2>Tarefas</h2>
+        <Button variant="dark" size="sm" onClick={goToCreateTask}>Nova Tarefa</Button>
+      </TaskHeader>
       <br></br>
       <Table striped bordered hover className="text-center">
         <thead>
@@ -47,13 +61,13 @@ const Tasks: React.FC = () => {
         <tbody>
           {
             tasks.map(task => {
-              <tr key={ task.id }>
-                <td>{ task.id }</td>
-                <td>{ task.title }</td>
-                <td>{ formatDate(task.updated_at) }</td>
+              <tr key={task.id}>
+                <td>{task.id}</td>
+                <td>{task.title}</td>
+                <td>{formatDate(task.updated_at)}</td>
                 <td>
-                  <Badge variant ={ task.finished ? "success" : "warning" }>
-                    { task.finished ? "FINALIZADO" : "PENDENTE" }
+                  <Badge variant={task.finished ? "success" : "warning"}>
+                    {task.finished ? "FINALIZADO" : "PENDENTE"}
                   </Badge>
                 </td>
                 <td>
