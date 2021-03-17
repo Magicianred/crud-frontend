@@ -1,19 +1,16 @@
 import React, { ChangeEvent, useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
+import { goBack } from '../../router/Coordinator';
+import { ITaskBody } from '../../model';
 import api from '../../services/api';
 import { TaskHeader } from './styles';
-
-interface ITask {
-  title: string;
-  description: string;
-}
 
 const TaskForm: React.FC = () => {
   const history = useHistory()
   const { id } = useParams()
 
-  const [model, setModel] = useState<ITask>({
+  const [model, setModel] = useState<ITaskBody>({
     title: '',
     description: ''
   })
@@ -41,7 +38,7 @@ const TaskForm: React.FC = () => {
         const res = await api.post(`/tasks`, model)
         setModel(res.data)
       }
-      goBack()
+      goBack(history)
     } catch (err) {
       alert ("Ops, ocorreu um erro!")
     }
@@ -53,10 +50,6 @@ const TaskForm: React.FC = () => {
       title: res.data.title,
       description: res.data.description
     })
-  }
-
-  const goBack = async () => {
-    history.goBack()
   }
 
   return (

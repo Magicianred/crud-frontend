@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Badge, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import moment from 'moment';
-import { TaskHeader } from './styles';
+import { formatDate } from '../../utils';
+import { ITask } from '../../model';
 import api from '../../services/api';
-
-interface ITask {
-  id: number;
-  title: string;
-  description: string;
-  finished: boolean;
-  created_at: Date;
-  updated_at: Date;
-}
+import { goToCreateTask } from '../../router/Coordinator';
+import { TaskHeader } from './styles';
 
 const Tasks: React.FC = () => {
-
   const [tasks, setTasks] = useState<ITask[]>([])
   const history = useHistory()
 
@@ -41,14 +33,6 @@ const Tasks: React.FC = () => {
     await api.delete(`tasks/${id}`)
     loadTasks()
   }
-
-  const formatDate = (date: Date) => {
-    return moment(date).format("DD/MM/YYYY")
-  }
-  
-  const goToCreateTask = async () => {
-    history.push('/cadastro')
-  }
  
   const editTask = async (id: number) => {
     history.push(`/cadastro/${id}`)
@@ -63,7 +47,7 @@ const Tasks: React.FC = () => {
       <br></br>
       <TaskHeader className="task-header">
         <h2>Tarefas</h2>
-        <Button variant="dark" size="sm" onClick={goToCreateTask}>Nova Tarefa</Button>
+        <Button variant="dark" size="sm" onClick={() => goToCreateTask(history)}>Nova Tarefa</Button>
       </TaskHeader>
       <br></br>
       <Table striped bordered hover className="text-center">

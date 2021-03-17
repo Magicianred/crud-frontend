@@ -6,3 +6,8 @@ export interface ITask {
   created_at: date;
   updated_at: date;
 }
+
+export interface ITaskBody {
+  title: string;
+  description: string;
+}
